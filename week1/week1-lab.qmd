@@ -1,0 +1,7 @@
+---
+title: "week1 lab"
+author: "Nathalie Bonnet"
+date: "1-07-2026"
+format: html
+---
+
