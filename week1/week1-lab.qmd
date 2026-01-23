@@ -4,4 +4,47 @@ author: "Nathalie Bonnet"
 date: "1-07-2026"
 format: html
 ---
+```{r}
+# Setup 
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+```{r}
+stress_data <- read.csv(here("week1", "data", "stressor.csv")) %>% 
+  clean_names()
+```
+
+```{r}
+# Remove special characters in the state and stressor column 
+cleaned_data <- stress_data %>% 
+  mutate(state = str_replace_all(state, "[^A-Za-z]", ""), 
+                  stressor = str_replace_all(stressor, "[^A-Za-z]", "")) %>% 
+  pivot_longer(cols = c("january_march", "april_june", "july_september", "october_december"), names_to = "period", values_to = "percent") %>% 
+  mutate(quarter = case_when(period == "january_march" ~ 1, 
+                              period == "april_june" ~ 2, 
+                              period == "july_september" ~ 3, 
+                              period =="october_december" ~ 4)) %>% 
+  filter(!state %in% c("United States", "Other States"))
+
+# Check that year is numeric
+class(cleaned_data$year)
+```
+
+```{r}
+unique(cleaned_data$stressor)
+
+parasite_subset <- cleaned_data %>% 
+  filter(stressor == "Varroamites"&
+           state == "Colorado") %>% 
+  group_by(year, quarter) %>% 
+  summarize(avg_stress = mean(percent, na.rm = TRUE)) 
+
+ggplot(data= parasite_subset, aes(x = year, y = avg_stress, fill = quarter))+
+  geom_col(position = "dodge") 
+  scale_fill_manual(values = c(""))
+  
+
+```
 
