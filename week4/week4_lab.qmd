@@ -1,0 +1,89 @@
+---
+title: "week4_lab"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(patchwork)
+data <- read_csv(here("week4", "data", "data.csv"), skip = 4) %>% 
+  janitor::clean_names() %>% 
+  mutate(val_anom = value + anomaly)
+```
+
+```{r}
+
+
+font_add_google("Monsieur la Doulaise", "MonsieurLaDoulaise")
+
+p1 <- ggplot(data = data, aes(x = date, y = value)) +
+  geom_area(data, mapping = aes(x = date, y = val_anom), fill = "white", alpha = 0.9) +
+  geom_area(fill = "lightblue", alpha = 0.9)+
+  scale_y_continuous(limits = c(0, 25))+
+  theme(panel.background = element_rect(fill = "grey4")) +
+  labs(title = "Snow Cover in North America and Greenland",
+       x = "cover (million km^2)", 
+       y = "Year") +
+  geom_label(aes(x = 1990, y = 23), 
+           label = "snowy peaks and valleys of cover anomaly",
+           family = "MonsieurLaDoulaise")
+  
+p2 <- ggplot(data = data, aes(x = date, y = value))+
+  geom_bar(stat = "identity", fill = alpha("lightyellow3"))+
+  coord_polar(start = 0)+
+  ylim(0, 60)+
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA), 
+    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent"),
+  ) +
+  theme_void()
+
+p1 +inset_element(p2, left = 0.5, bottom = 0.4, right = 1, top = 1.3)
+```
+
+
+
+
+
+```{r}
+library(scales)
+library(sysfonts)
+library(scales)
+library(sysfonts)
+library(showtext)
+showtext_auto()
+font_add_google("Monsieur La Doulaise", "MonsieurLaDoulaise")
+p1 <- ggscalesp1 <- ggplot(data = data, aes(x = date, y = value)) +
+  geom_area(data = data, mapping = aes(x = date, y = val_anom), fill = "white", alpha = 0.9) +
+  geom_area(fill = "lightblue", alpha = 0.9) +
+  scale_y_continuous(limits = c(0, 25)) +
+  theme(
+    panel.background = element_rect(fill = "grey4"),
+    plot.title = element_text(
+      family = "MonsieurLaDoulaise", # Use the name you registered
+      size = 20,
+      face = "bold" # Can also specify bold/italic if available
+    )) +
+  labs(
+    title = "Snow Cover in North America and Greenland",
+    x = "Year",
+    y = "Cover (million km^2)"
+  ) +
+  geom_label(aes(x = 1990, y = 23), label = "snowy peaks and valleys of cover anomaly")
+p2 <- ggplot(data = data, aes(x = date, y = value)) +
+  geom_bar(stat = "identity", fill = alpha("yellow", 0.8)) +
+  coord_polar(start = 0) +
+  ylim(0, 60) +
+  theme_void() +
+  theme(
+    panel.background = element_rect(fill = "transparent", color = NA),
+    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.background = element_rect(fill = "transparent"),
+    legend.box.background = element_rect(fill = "transparent")
+  )
+p1 + inset_element(p2, left = 0.5, bottom = 0.4, right = 1, top = 1.3)
+```
+
